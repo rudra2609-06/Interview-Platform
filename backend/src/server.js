@@ -10,14 +10,17 @@ const app = express();
 
 const __dirname = path.resolve();
 
-const functions = [deleteUser, syncUser]
+const functions = [deleteUser, syncUser];
 
 app.use(express.json());
 app.use(
   cors({
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
-    origin: ENV.CLIENT_URL,
+    origin:
+      ENV.NODE_ENV === "development"
+        ? ENV.CLIENT_URL
+        : ENV.CLIENT_URL_PRODUCTION,
   }),
 );
 
