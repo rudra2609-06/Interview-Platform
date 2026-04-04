@@ -6,9 +6,10 @@ import UserModel from "../models/user.model.js";
 export const inngest = new Inngest({ id: "interview-app" });
 
 export const syncUser = inngest.createFunction(
-  { id: "sync-user", triggers: { event: "clerk/user.created" } },
+  { id: "sync-user", trigger: { event: "clerk/user.created" } },
   async ({ event, step }) => {
     await dbConnect();
+    console.log("DB ready");  
     const { id, image_url, email_addresses, first_name, last_name } =
       event.data;
     const newUser = {
@@ -23,8 +24,9 @@ export const syncUser = inngest.createFunction(
 );
 
 export const deleteUser = inngest.createFunction(
-  { id: "deleteUser", triggers: { event: "clerk/user.deleted" } },
+  { id: "deleteUser", trigger: { event: "clerk/user.deleted" } },
   async ({ event, step }) => {
+    await dbConnect();
     const { deleted, id } = event.data;
     if (deleted && id) {
       await UserModel.deleteOne({ clerkId: id });
