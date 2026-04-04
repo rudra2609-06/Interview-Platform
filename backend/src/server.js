@@ -2,14 +2,30 @@ import express from "express";
 import { ENV } from "./lib/env.js";
 import path from "node:path";
 import dbConnect from "./lib/db.js";
+import { serve } from "inngest/express";
+import { inngest, deleteUser, syncUser } from "./lib/inngest.js";
+import cors from "cors";
 
 const app = express();
 
 const __dirname = path.resolve();
 
-app.get("/check",(req,res) => {
+const functions = [deleteUser, syncUser]
+
+app.use(express.json());
+app.use(
+  cors({
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true,
+    origin: ENV.CLIENT_URL,
+  }),
+);
+
+app.use("/api/inngest", serve({ client: inngest, functions }));
+
+app.get("/check", (req, res) => {
   res.send("hi we are ready");
-})
+});
 
 //make it ready for deployement
 if (ENV.NODE_ENV !== "development") {
