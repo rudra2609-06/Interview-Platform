@@ -1,6 +1,7 @@
 import express from "express";
 import { ENV } from "./lib/env.js";
 import path from "node:path";
+import dbConnect from "./lib/db.js";
 
 const app = express();
 
@@ -22,7 +23,9 @@ if (ENV.NODE_ENV !== "development") {
 app.listen(ENV.PORT, (err) => {
   if (err) {
     console.log(err.message || err);
+    process.exit(1); //0 means success 1 means false
   } else {
     console.log(`Server Started at http://localhost:${process.env.PORT}`);
+    dbConnect();
   }
 });
