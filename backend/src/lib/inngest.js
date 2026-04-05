@@ -7,7 +7,7 @@ import { deleteStreamUser, upsertStreamUser } from "./stream.js";
 export const inngest = new Inngest({ id: "interview-app" });
 
 export const syncUser = inngest.createFunction(
-  { id: "sync-user", triggers: { event: "clerk/user.created" } },
+  { id: "sync-user", triggers: [{ event: "clerk/user.created" }] },
   async ({ event, step }) => {
     try {
       await dbConnect();
@@ -27,19 +27,24 @@ export const syncUser = inngest.createFunction(
       });
     } catch (error) {
       console.error("Error syncing user:", error);
-      throw error; 
+      throw error;
     }
   },
 );
 
 export const deleteUser = inngest.createFunction(
-  { id: "deleteUser", triggers: { event: "clerk/user.deleted" } },
+  { id: "deleteUser", triggers: [{ event: "clerk/user.deleted" }] },
   async ({ event, step }) => {
-    await dbConnect();
-    const { deleted, id } = event.data;
-    if (deleted && id) {
-      await UserModel.deleteOne({ clerkId: id });
-      await deleteStreamUser(id.toString());
+    try {
+      await dbConnect();
+      const { deleted, id } = event.data;
+      if (deleted && id) {
+        await UserModel.deleteOne({ clerkId: id });
+        await deleteStreamUser(id.toString());
+      }
+    } catch (error) {
+      console.error("Inngest error deleting user:", error);
+      throw error;
     }
   },
 );

@@ -5,6 +5,9 @@ import dbConnect from "./lib/db.js";
 import { serve } from "inngest/express";
 import { inngest, deleteUser, syncUser } from "./lib/inngest.js";
 import cors from "cors";
+import { clerkMiddleware } from "@clerk/express";
+import { protectRoutes } from "./middlewares/protectRoutes.middleware.js";
+import chatRouter from "./routes/chat.routes.js";
 
 const app = express();
 
@@ -24,9 +27,12 @@ app.use(
   }),
 );
 
+app.use(clerkMiddleware());
 app.use("/api/inngest", serve({ client: inngest, functions }));
+app.use("/api/chat", chatRouter);
 
-app.get("/check", (req, res) => {
+app.get("/check", protectRoutes, (req, res) => {
+  console.log(req.user.name);
   res.send("hi we are ready");
 });
 
