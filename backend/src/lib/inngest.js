@@ -10,7 +10,7 @@ export const syncUser = inngest.createFunction(
   { id: "sync-user", triggers: { event: "clerk/user.created" } },
   async ({ event, step }) => {
     try {
-      dbConnect();
+      await dbConnect();
       const { id, image_url, email_addresses, first_name, last_name } =
         event.data;
       const newUser = {
@@ -27,7 +27,7 @@ export const syncUser = inngest.createFunction(
       });
     } catch (error) {
       console.error("Error syncing user:", error);
-      throw error; // Let Inngest handle the error properly
+      throw error; 
     }
   },
 );
@@ -35,7 +35,7 @@ export const syncUser = inngest.createFunction(
 export const deleteUser = inngest.createFunction(
   { id: "deleteUser", triggers: { event: "clerk/user.deleted" } },
   async ({ event, step }) => {
-    dbConnect();
+    await dbConnect();
     const { deleted, id } = event.data;
     if (deleted && id) {
       await UserModel.deleteOne({ clerkId: id });
