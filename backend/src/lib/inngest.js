@@ -6,7 +6,6 @@ import UserModel from "../models/user.model.js";
 import UserModel from "../models/user.model.js";
 import dbConnect from "./db.js";
 
-
 export const inngest = new Inngest({ id: "interview-app" });
 
 export const syncUser = inngest.createFunction(
@@ -57,13 +56,12 @@ export const deleteUser = inngest.createFunction(
     } catch (error) {
       console.error("Error deleting user:", error);
       throw error;
-    dbConnect();
-    const { deleted, id } = event.data;
-    if (deleted && id) {
-      await UserModel.deleteOne({ clerkId: id });
-      await deleteStreamUser(id.toString());
+      dbConnect();
+      const { deleted, id } = event.data;
+      if (deleted && id) {
+        await UserModel.deleteOne({ clerkId: id });
+        await deleteStreamUser(id.toString());
+      }
     }
   },
 );
-
-
