@@ -13,12 +13,12 @@ const sessionSchema = new mongoose.Schema(
     },
     host: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "UserModel",
+      ref: "usertbl",
       required: true,
     },
     participant: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "UserModel",
+      ref: "usertbl",
       default: null,
     },
     status: {
