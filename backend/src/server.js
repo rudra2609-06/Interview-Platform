@@ -8,7 +8,7 @@ import cors from "cors";
 import { clerkMiddleware } from "@clerk/express";
 import { protectRoutes } from "./middlewares/protectRoutes.middleware.js";
 import chatRouter from "./routes/chat.routes.js";
-
+import sessionRouter from "./routes/session.routes.js";
 const app = express();
 
 const __dirname = path.resolve();
@@ -30,6 +30,7 @@ app.use(
 app.use(clerkMiddleware());
 app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/chat", chatRouter);
+app.use("/api/sessions", sessionRouter);
 
 app.get("/check", protectRoutes, (req, res) => {
   console.log(req.user.name);
