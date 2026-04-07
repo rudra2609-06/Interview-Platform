@@ -13,13 +13,6 @@ export const createSession = async (req, res) => {
     //generate unique call id from stream vedio call
     const callId = `session_${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
-    const session = await SessionModel.create({
-      problem,
-      difficulty,
-      host: userId,
-      callId,
-    });
-
     //create a stream vedio call
     await streamClient.video.call("default", callId).getOrCreate({
       data: {
@@ -39,6 +32,14 @@ export const createSession = async (req, res) => {
     });
 
     await channel.create();
+
+    const session = await SessionModel.create({
+      problem,
+      difficulty,
+      host: userId,
+      callId,
+    });
+
     res.status(201).json({ message: "Session Created Successfully", session });
   } catch (error) {
     console.log("create session controller error: ", error.message);
@@ -48,16 +49,16 @@ export const createSession = async (req, res) => {
 
 export const getActiveSessions = async (req, res) => {
   try {
-    const userId = req.user;
+    const userId = req.user._id;
     const activeSessions = await SessionModel.find({
       status: "active",
-      $or: [{ host: userId }, { participants: userId }],
+      $or: [{ host: userId }, { participant: userId }],
     })
       .populate("host", "name profileImg")
-      .populate("participants", "name profileImg")
+      .populate("participant", "name profileImg")
       .sort({ createdAt: -1 })
       .limit(20);
-    res
+    return res
       .status(200)
       .json({ message: "Active Sessions Fetched", session: activeSessions });
   } catch (error) {
@@ -68,14 +69,14 @@ export const getActiveSessions = async (req, res) => {
 
 export const getPastSessions = async (req, res) => {
   try {
-    const userId = req.user;
+    const userId = req.user._id;
     const pastSessions = await SessionModel.find({
       status: "completed",
       $or: [
         {
           host: userId,
-          participants: userId,
         },
+        { participant: userId },
       ],
     })
       .populate("host", "name profileImg")
@@ -119,8 +120,8 @@ export const joinSession = async (req, res) => {
     const session = await SessionModel.findById(id);
     if (!session) return res.status(404).json({ message: "Session Not Found" });
 
-    //if session is already active
-    if (session.status === "active")
+    //if session is already completed
+    if (session.status === "completed")
       return res.status(400).json({ message: "Session Already Completed" });
 
     if (session.host.toString() === userId.toString()) {
@@ -130,15 +131,15 @@ export const joinSession = async (req, res) => {
     }
 
     //check if session if already full that is it already has 2 participants
-    if (session.participants)
+    if (session.participant)
       return res
         .status(409)
         .json({ message: "Session Already has 2 Members.Its Full" });
 
-    session.participants = userId;
-    await SessionModel.save();
     const channel = chatClient.channel("messaging", session.callId);
-    channel.addMembers([clerkId]);
+    await channel.addMembers([clerkId]);
+    session.participant = userId;
+    await session.save();
     return res
       .status(200)
       .json({ message: "Session Joined Successfully", session });
@@ -172,8 +173,9 @@ export const endSession = async (req, res) => {
     await channel.delete({ hard_delete: true });
 
     //end the session
-    session.status === "completed";
-    await SessionModel.save();
+    session.status = "completed";
+    session.participant = null;
+    await session.save();
 
     return res.status(200).json({ message: "Session Ended Successfully" });
   } catch (error) {
