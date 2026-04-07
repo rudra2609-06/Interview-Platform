@@ -15,18 +15,18 @@ export const syncUser = inngest.createFunction(
         event.data;
       const newUser = {
         clerkId: id,
-        name: `${first_name || ""} ${last_name}`,
+        name: `${first_name || ""} ${last_name || ""}`,
         email: email_addresses[0]?.email_address,
         profileImg: image_url,
       };
       await UserModel.create(newUser);
       await upsertStreamUser({
-        id: newUser.clerkId.toString(),
+        id: newUser.clerkId,
         name: newUser.name,
         image: newUser.profileImg,
       });
     } catch (error) {
-      console.error("Error syncing user:", error);
+      console.log("Error syncing user:", error);
       throw error;
     }
   },
@@ -40,7 +40,7 @@ export const deleteUser = inngest.createFunction(
       const { deleted, id } = event.data;
       if (deleted && id) {
         await UserModel.deleteOne({ clerkId: id });
-        await deleteStreamUser(id.toString());
+        await deleteStreamUser(id);
       }
     } catch (error) {
       console.error("Inngest error deleting user:", error);
