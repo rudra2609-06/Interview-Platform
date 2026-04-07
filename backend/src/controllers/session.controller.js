@@ -119,10 +119,20 @@ export const joinSession = async (req, res) => {
     const session = await SessionModel.findById(id);
     if (!session) return res.status(404).json({ message: "Session Not Found" });
 
+    //if session is already active
+    if (session.status === "active")
+      return res.status(400).json({ message: "Session Already Completed" });
+
+    if (session.host.toString() === userId.toString()) {
+      return res
+        .status(400)
+        .json({ message: "Host Cannot join as participant" });
+    }
+
     //check if session if already full that is it already has 2 participants
     if (session.participants)
       return res
-        .status(400)
+        .status(409)
         .json({ message: "Session Already has 2 Members.Its Full" });
 
     session.participants = userId;
@@ -161,7 +171,7 @@ export const endSession = async (req, res) => {
     const call = streamClient.video.call("default", session.callId);
     await call.delete({ hard: true });
 
-    //delete chat messaging 
+    //delete chat messaging
     const channel = chatClient.channel("messaging", session.callId);
     await channel.delete({ hard_delete: true });
 
