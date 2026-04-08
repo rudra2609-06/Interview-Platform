@@ -136,6 +136,11 @@ export const joinSession = async (req, res) => {
         .status(409)
         .json({ message: "Session Already has 2 Members.Its Full" });
 
+<<<<<<< Updated upstream
+=======
+    session.participants = userId;
+    await session.save();
+>>>>>>> Stashed changes
     const channel = chatClient.channel("messaging", session.callId);
     await channel.addMembers([clerkId]);
     session.participant = userId;
@@ -173,8 +178,12 @@ export const endSession = async (req, res) => {
     await channel.delete({ hard_delete: true });
 
     //end the session
+<<<<<<< Updated upstream
     session.status = "completed";
     session.participant = null;
+=======
+    session.status === "completed";
+>>>>>>> Stashed changes
     await session.save();
 
     return res.status(200).json({ message: "Session Ended Successfully" });
