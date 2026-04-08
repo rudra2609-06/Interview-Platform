@@ -7,18 +7,15 @@ import {
 } from "@clerk/react";
 import React from "react";
 import "./style.css";
+import Router from "./Routes/Router.jsx";
+import ToasterCom from "./components/ToasterCom.jsx";
 
 const App = () => {
   return (
     <div>
-      <h1 className="bg-amber-800">welcome to app</h1>
-      <Show when="signed-out">
-        <SignInButton mode="modal" />
-      </Show>
-      <Show when="signed-in">
-        <SignOutButton mode="modal" />
-      </Show>
-      <UserButton />
+      <Router />
+      <ToasterCom />
+      <h1 className="bg-fuchsia-800">welcome to app</h1>
     </div>
   );
 };
