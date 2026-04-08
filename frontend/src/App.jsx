@@ -15,7 +15,6 @@ const App = () => {
     <div>
       <Router />
       <ToasterCom />
-      <h1 className="bg-fuchsia-800">welcome to app</h1>
     </div>
   );
 };
