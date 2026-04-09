@@ -2,25 +2,35 @@ import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "../pages/Home.jsx";
 import Problems from "../pages/Problems.jsx";
-import { useUser } from "@clerk/react";
 import Dashboard from "../pages/Dashboard.jsx";
+import ProtectedRoute from "../components/ProtectedRoute.jsx";
+// import { useEffect } from "react";
 
 const Router = () => {
-  const { isSignedIn } = useUser();
+
+  // useEffect(() => {
+
+  // },[]);
+  // TODO handle route not found page also
 
   return (
     <Routes>
+      <Route element={<Home />} path="/" />
       <Route
-        element={!isSignedIn ? <Home /> : <Navigate to="/dashboard" />}
-        path="/"
+        path="/problems"
+        element={
+          <ProtectedRoute>
+            <Problems />
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/dashboard"
-        element={isSignedIn ? <Dashboard /> : <Navigate to={"/"} />}
-      />
-      <Route
-        element={isSignedIn ? <Problems /> : <Navigate to="/" />}
-        path="/problems"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
       />
     </Routes>
   );
