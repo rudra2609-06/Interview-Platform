@@ -48,13 +48,13 @@ export const createSession = async (req, res) => {
 
 export const getActiveSessions = async (req, res) => {
   try {
-    const userId = req.user;
+    const userId = req.user._id;
     const activeSessions = await SessionModel.find({
       status: "active",
-      $or: [{ host: userId }, { participants: userId }],
+      $or: [{ host: userId }, { participant: userId }],
     })
       .populate("host", "name profileImg")
-      .populate("participants", "name profileImg")
+      .populate("participant", "name profileImg")
       .sort({ createdAt: -1 })
       .limit(20);
     res
@@ -68,13 +68,15 @@ export const getActiveSessions = async (req, res) => {
 
 export const getPastSessions = async (req, res) => {
   try {
-    const userId = req.user;
+    const userId = req.user._id;
     const pastSessions = await SessionModel.find({
       status: "completed",
       $or: [
         {
           host: userId,
-          participants: userId,
+        },
+        {
+          participant: userId,
         },
       ],
     })
@@ -119,8 +121,8 @@ export const joinSession = async (req, res) => {
     const session = await SessionModel.findById(id);
     if (!session) return res.status(404).json({ message: "Session Not Found" });
 
-    //if session is already active
-    if (session.status === "active")
+    //if session is already completed
+    if (session.status === "completed")
       return res.status(400).json({ message: "Session Already Completed" });
 
     if (session.host.toString() === userId.toString()) {
@@ -129,14 +131,14 @@ export const joinSession = async (req, res) => {
         .json({ message: "Host Cannot join as participant" });
     }
 
-    //check if session if already full that is it already has 2 participants
-    if (session.participants)
+    //check if session if already full that is it already has 2 participant
+    if (session.participant)
       return res
         .status(409)
         .json({ message: "Session Already has 2 Members.Its Full" });
 
-    session.participants = userId;
-    await SessionModel.save();
+    session.participant = userId;
+    await session.save();
     const channel = chatClient.channel("messaging", session.callId);
     channel.addMembers([clerkId]);
     return res
@@ -160,7 +162,7 @@ export const endSession = async (req, res) => {
       return res.status(403).json({ message: "Only Host Can End Session" });
 
     //check if session if already completed
-    if (session.status === "completed")
+    if ((session.status === "completed"))
       return res.status(400).json({ message: "Session Already Ended" });
 
     //delete vedio call
@@ -172,8 +174,8 @@ export const endSession = async (req, res) => {
     await channel.delete({ hard_delete: true });
 
     //end the session
-    session.status === "completed";
-    await SessionModel.save();
+    session.status = "completed";
+    await session.save();
 
     return res.status(200).json({ message: "Session Ended Successfully" });
   } catch (error) {

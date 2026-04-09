@@ -16,7 +16,7 @@ const sessionSchema = new mongoose.Schema(
       ref: "UserModel",
       required: true,
     },
-    participants: {
+    participant: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "UserModel",
       default: null,
@@ -24,7 +24,7 @@ const sessionSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["active", "completed"],
-      default: "active",
+      default : "active",
     },
     callId: {
       type: String,
