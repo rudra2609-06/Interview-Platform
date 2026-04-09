@@ -76,7 +76,9 @@ export const getPastSessions = async (req, res) => {
         {
           host: userId,
         },
-        { participant: userId },
+        {
+          participant: userId,
+        },
       ],
     })
       .populate("host", "name profileImg")
@@ -130,21 +132,16 @@ export const joinSession = async (req, res) => {
         .json({ message: "Host Cannot join as participant" });
     }
 
-    //check if session if already full that is it already has 2 participants
+    //check if session if already full that is it already has 2 participant
     if (session.participant)
       return res
         .status(409)
         .json({ message: "Session Already has 2 Members.Its Full" });
 
-<<<<<<< Updated upstream
-=======
-    session.participants = userId;
-    await session.save();
->>>>>>> Stashed changes
+    session.participant = userId;
     const channel = chatClient.channel("messaging", session.callId);
     await channel.addMembers([clerkId]);
-    session.participant = userId;
-    await session.save();
+    await session.save();  
     return res
       .status(200)
       .json({ message: "Session Joined Successfully", session });
@@ -166,7 +163,7 @@ export const endSession = async (req, res) => {
       return res.status(403).json({ message: "Only Host Can End Session" });
 
     //check if session if already completed
-    if (session.status === "completed")
+    if ((session.status === "completed"))
       return res.status(400).json({ message: "Session Already Ended" });
 
     //delete vedio call
@@ -178,12 +175,8 @@ export const endSession = async (req, res) => {
     await channel.delete({ hard_delete: true });
 
     //end the session
-<<<<<<< Updated upstream
     session.status = "completed";
     session.participant = null;
-=======
-    session.status === "completed";
->>>>>>> Stashed changes
     await session.save();
 
     return res.status(200).json({ message: "Session Ended Successfully" });
