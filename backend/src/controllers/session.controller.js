@@ -13,13 +13,6 @@ export const createSession = async (req, res) => {
     //generate unique call id from stream vedio call
     const callId = `session_${Date.now()}_${Math.random().toString(36).substring(7)}`;
 
-    const session = await SessionModel.create({
-      problem,
-      difficulty,
-      host: userId,
-      callId,
-    });
-
     //create a stream vedio call
     await streamClient.video.call("default", callId).getOrCreate({
       data: {
@@ -39,6 +32,14 @@ export const createSession = async (req, res) => {
     });
 
     await channel.create();
+
+    const session = await SessionModel.create({
+      problem,
+      difficulty,
+      host: userId,
+      callId,
+    });
+
     res.status(201).json({ message: "Session Created Successfully", session });
   } catch (error) {
     console.log("create session controller error: ", error.message);
@@ -57,7 +58,7 @@ export const getActiveSessions = async (req, res) => {
       .populate("participant", "name profileImg")
       .sort({ createdAt: -1 })
       .limit(20);
-    res
+    return res
       .status(200)
       .json({ message: "Active Sessions Fetched", session: activeSessions });
   } catch (error) {
@@ -138,9 +139,9 @@ export const joinSession = async (req, res) => {
         .json({ message: "Session Already has 2 Members.Its Full" });
 
     session.participant = userId;
-    await session.save();
     const channel = chatClient.channel("messaging", session.callId);
-    channel.addMembers([clerkId]);
+    await channel.addMembers([clerkId]);
+    await session.save();  
     return res
       .status(200)
       .json({ message: "Session Joined Successfully", session });
@@ -175,6 +176,7 @@ export const endSession = async (req, res) => {
 
     //end the session
     session.status = "completed";
+    session.participant = null;
     await session.save();
 
     return res.status(200).json({ message: "Session Ended Successfully" });

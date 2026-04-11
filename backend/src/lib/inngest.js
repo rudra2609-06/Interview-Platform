@@ -38,10 +38,8 @@ export const deleteUser = inngest.createFunction(
     try {
       await dbConnect();
       const { deleted, id } = event.data;
-      if (deleted && id) {
-        await UserModel.deleteOne({ clerkId: id });
-        await deleteStreamUser(id);
-      }
+      await UserModel.deleteOne({ clerkId: id });
+      await deleteStreamUser(id);
     } catch (error) {
       console.error("Inngest error deleting user:", error);
       throw error;
