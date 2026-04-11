@@ -11,15 +11,18 @@
   },
   "dependencies": {
     "@clerk/react": "^6.1.4",
+    "@monaco-editor/react": "^4.7.0",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/react-query": "^5.96.2",
     "@vitejs/plugin-react": "^6.0.1",
     "axios": "^1.7.9",
+    "canvas-confetti": "^1.9.4",
     "daisyui": "^5.5.19",
     "lucide-react": "^1.7.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-hot-toast": "^2.6.0",
+    "react-resizable-panels": "^4.9.0",
     "react-router-dom": "^7.14.0",
     "tailwindcss": "^4.2.2",
     "vite": "^8.0.1"

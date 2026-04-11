@@ -12,7 +12,12 @@ const ProtectedRoute = ({ children }) => {
       </div>
     );
 
-  if (!isSignedIn) return <Navigate to="/" />;
+  if (!isSignedIn)
+    return (
+      <>
+        <Navigate to="/" />
+      </>
+    );
 
   return children;
 };

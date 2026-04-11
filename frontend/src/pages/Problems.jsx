@@ -7,9 +7,9 @@ import { Link } from "react-router-dom";
 
 const Problems = () => {
   const problems = Object.values(PROBLEMS);
-  const easyProblems = problems.filter(p => p.difficulty === "Easy");
-  const mediumProblems = problems.filter(p => p.difficulty === "Medium");
-  const hardProblems = problems.filter(p => p.difficulty === "Hard")
+  const easyProblems = problems.filter((p) => p.difficulty === "Easy");
+  const mediumProblems = problems.filter((p) => p.difficulty === "Medium");
+  const hardProblems = problems.filter((p) => p.difficulty === "Hard");
 
   return (
     <div className="min-h-screen bg-base-200">
@@ -28,7 +28,7 @@ const Problems = () => {
           {problems.map((problem) => (
             <Link
               key={problem.id}
-              to={`problem/${problem.id}`}
+              to={`/problem/${problem.id}`}
               className="card bg-base-100 hover:scale-[1.01] transition-transform"
             >
               <div className="card-body">
@@ -82,17 +82,23 @@ const Problems = () => {
 
               <div className="stat">
                 <div className="stat-title">Easy Problems</div>
-                <div className="stat-value text-primary">{easyProblems.length}</div>
+                <div className="stat-value text-primary">
+                  {easyProblems.length}
+                </div>
               </div>
 
               <div className="stat">
                 <div className="stat-title">Medium Problems</div>
-                <div className="stat-value text-warning">{mediumProblems.length}</div>
+                <div className="stat-value text-warning">
+                  {mediumProblems.length}
+                </div>
               </div>
 
               <div className="stat">
                 <div className="stat-title">Hard Problems</div>
-                <div className="stat-value text-error">{hardProblems.length}</div>
+                <div className="stat-value text-error">
+                  {hardProblems.length}
+                </div>
               </div>
             </div>
           </div>

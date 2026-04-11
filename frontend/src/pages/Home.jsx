@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { SignInButton } from "@clerk/react";
+import { Link, Navigate } from "react-router-dom";
+import { SignInButton, useUser } from "@clerk/react";
 import {
   SparklesIcon,
   ArrowRightIcon,
@@ -11,6 +11,20 @@ import {
 } from "lucide-react";
 
 const Home = () => {
+  const { isLoaded, isSignedIn } = useUser();
+
+  if (isLoaded && isSignedIn) {
+    return <Navigate to="/problems" replace />;
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <span className="loading loading-bars loading-md"></span>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-linear-to-br from-base-100 via-base-200 to-base-300">
       {/* NAVBAR */}
