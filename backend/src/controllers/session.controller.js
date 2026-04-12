@@ -49,10 +49,8 @@ export const createSession = async (req, res) => {
 
 export const getActiveSessions = async (req, res) => {
   try {
-    const userId = req.user._id;
     const activeSessions = await SessionModel.find({
       status: "active",
-      $or: [{ host: userId }, { participant: userId }],
     })
       .populate("host", "name profileImg clerkId")
       .populate("participant", "name profileImg clerkId")
