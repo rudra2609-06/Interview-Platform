@@ -81,7 +81,12 @@ export const sessionApi = {
     try {
       const res = await apiInstance.get("/chat/token");
       if (res.status === 200) {
-        return { status: true, data: res.data.user, token: res.data.token };
+        return {
+          status: true,
+          data: res.data.user,
+          chatToken: res.data.chatToken, 
+          videoToken: res.data.videoToken, 
+        };
       }
     } catch (error) {
       throw new Error(getErrorMessage(error));

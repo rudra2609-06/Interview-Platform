@@ -13,6 +13,7 @@ import RecentSessions from "../components/RecentSessions.jsx";
 import ActiveSessions from "../components/ActiveSessions.jsx";
 import StatsCard from "../components/StatsCard.jsx";
 import CreateSessionModal from "../components/CreateSessionModal.jsx";
+import { LANGUAGE_CONFIG } from "../data/data.js";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -24,9 +25,9 @@ const Dashboard = () => {
   const createSessionMutation = useCreateSession();
 
   const { data: activeSessionData, isLoading: isLoadingActiveSessions } =
-    useActiveSessions();
+    useActiveSessions(user?.id);
   const { data: recentSessionData, isLoading: isLoadingRecentSessions } =
-    useMyRecentSessions();
+    useMyRecentSessions(user?.id);
 
   const handleCreateRoom = () => {
     if (!roomConfig.difficulty || !roomConfig.problem)
@@ -39,7 +40,7 @@ const Dashboard = () => {
       {
         onSuccess: (data) => {
           setShowCreateModal(false);
-          navigate(`session/${data.data._id}`);
+          navigate(`/session/${data.data._id}`);
         },
       },
     );
@@ -55,6 +56,7 @@ const Dashboard = () => {
       session.participant?.clerkId === user.id
     );
   };
+
 
   return (
     <>

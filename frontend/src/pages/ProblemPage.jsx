@@ -79,7 +79,7 @@ const ProblemPage = () => {
     try {
       const result = await executeCode(selectedLanguage, code);
       if (result.success) {
-        setOutput(result.output);
+        setOutput(result);
         const actualOutput = result.output;
         const expectedOutput = currentProblem.expectedOutput[selectedLanguage];
         const isCorrect = checkIfTestPassed(expectedOutput, actualOutput);
@@ -91,7 +91,7 @@ const ProblemPage = () => {
           toast.error("Test Case Failed");
         }
       } else {
-        setOutput(result.error);
+        setOutput(result);
         console.log(result.error);
         toast.error(result.error || "Code execution failed");
       }
