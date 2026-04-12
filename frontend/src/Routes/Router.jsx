@@ -1,18 +1,13 @@
-import React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
-import Home from "../pages/Home.jsx";
-import Problems from "../pages/Problems.jsx";
-import Dashboard from "../pages/Dashboard.jsx";
+import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../components/ProtectedRoute.jsx";
+import Dashboard from "../pages/Dashboard.jsx";
+import Home from "../pages/Home.jsx";
 import ProblemPage from "../pages/ProblemPage.jsx";
-// import { useEffect } from "react";
+import Problems from "../pages/Problems.jsx";
+import Session from "../pages/Session.jsx";
+import Error from "../components/Error.jsx";
 
 const Router = () => {
-  // useEffect(() => {
-
-  // },[]);
-  // TODO handle route not found page also
-
   return (
     <Routes>
       <Route element={<Home />} path="/" />
@@ -40,6 +35,15 @@ const Router = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="session/:id"
+        element={
+          <ProtectedRoute>
+            <Session />
+          </ProtectedRoute>
+        }
+      />
+      <Route element={<Error />} path="*" />
     </Routes>
   );
 };
