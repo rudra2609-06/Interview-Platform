@@ -1,7 +1,8 @@
 import React from "react";
 
 const OutputPanel = ({ output }) => {
-  console.log(output);
+  // console.log(output);
+  // console.log("output error",output.error);
   return (
     <div className="h-full bg-base-100 flex flex-col">
       <div className="px-4 py-2 bg-base-200 border-b border-base-300 font-semibold text-sm">
@@ -14,19 +15,12 @@ const OutputPanel = ({ output }) => {
           </p>
         ) : output.success ? (
           <pre className="text-sm font-mono text-success whitespace-pre-wrap">
-            {output.output}
+            {output}
           </pre>
         ) : (
-          <div>
-            {output && (
-              <pre className="text-sm font-mono text-base-content whitespace-pre-wrap mb-2">
-                {output}
-              </pre>
-            )}
-            <pre className="text-sm font-mono text-error whitespace-pre-wrap">
-              {output.error}
-            </pre>
-          </div>
+          <pre className="text-sm font-mono text-error whitespace-pre-wrap">
+            {output.error}
+          </pre>
         )}
       </div>
     </div>

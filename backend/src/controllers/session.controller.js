@@ -54,8 +54,8 @@ export const getActiveSessions = async (req, res) => {
       status: "active",
       $or: [{ host: userId }, { participant: userId }],
     })
-      .populate("host", "name profileImg")
-      .populate("participant", "name profileImg")
+      .populate("host", "name profileImg clerkId")
+      .populate("participant", "name profileImg clerkId")
       .sort({ createdAt: -1 })
       .limit(20);
     return res

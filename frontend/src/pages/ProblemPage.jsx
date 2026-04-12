@@ -9,6 +9,7 @@ import CodeEditor from "../components/CodeEditor.jsx";
 import { toast } from "react-hot-toast";
 import { executeCode } from "../lib/jDoodle.js";
 import confetti from "canvas-confetti";
+import { useActiveSessions } from "../hooks/useSessions.js";
 
 const ProblemPage = () => {
   const { id } = useParams();
@@ -31,6 +32,10 @@ const ProblemPage = () => {
       setOutput(null);
     }
   }, [id, selectedLanguage]);
+
+  const { data: activeSessions } = useActiveSessions();
+
+  console.log("returned value",activeSessions);
 
   const handleLanguageChange = (language) => {
     if (!LANGUAGE_CONFIG[language]) {
@@ -86,6 +91,7 @@ const ProblemPage = () => {
           toast.error("Test Case Failed");
         }
       } else {
+        setOutput(result.error);
         console.log(result.error);
         toast.error(result.error || "Code execution failed");
       }
