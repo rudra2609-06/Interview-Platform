@@ -37,7 +37,7 @@ export async function executeCode(language, code) {
   } catch (error) {
     return {
       success: false,
-      error: error,
+      error: error?.message || String(error),
     };
   }
 }
