@@ -10,7 +10,7 @@
 
 A **full-stack collaborative coding interview platform** built for real-time technical sessions, live problem solving, and pair-programming style practice.
 
-[Live Demo]((https://interview-platform-peex.onrender.com) • [Report Bug](../../issues) • [Request Feature](../../issues)
+[Live Demo](https://interview-platform-peex.onrender.com) • [Report Bug](../../issues) • [Request Feature](../../issues)
 
 </div>
 
